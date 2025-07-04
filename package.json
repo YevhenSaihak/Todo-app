@@ -52,16 +52,13 @@
   "lint-staged": {
     "*.ts": [
       "ng lint --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.html": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.scss": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }
