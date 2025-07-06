@@ -7,7 +7,7 @@ import { TodoModel } from '../../core/models/todo.model';
   providedIn: 'root',
 })
 export class TodoTimerService {
-  //залишок часу у текстовому форматі
+  //Повертає потік, який віддає залишок часу у текстовому форматі
   getTimeLeftStream(todo: TodoModel): Observable<string> {
     // Якщо немає часу — повертаємо пустий рядок одразу
     if (!todo.expirationTime || todo.expirationTime.trim() === '') {

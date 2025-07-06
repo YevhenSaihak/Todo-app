@@ -3,13 +3,6 @@ export interface TodoModel {
   title: string;
   createdAt: string;
   expirationDate: string;
-  expirationTime?: string;
+  expirationTime?: string | null;
   favorite: boolean;
-}
-
-
-export interface AddTodoForm {
-  title: string ;
-  expirationDate: Date ;
-  expirationTime: string ;
 }

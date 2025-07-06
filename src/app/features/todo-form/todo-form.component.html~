@@ -16,8 +16,14 @@
       <div class="form-field">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Title</mat-label>
-          <textarea matInput formControlName="title" rows="3" appAutoResize maxlength="100"
-                    spellcheck="false"></textarea>
+          <textarea
+            matInput
+            formControlName="title"
+            rows="3"
+            appAutoResize
+            maxlength="101"
+            spellcheck="false"
+          ></textarea>
           <mat-hint align="end"> {{ form.controls.title.value?.length || 0 }}/100 </mat-hint>
 
           @if (
@@ -42,12 +48,15 @@
           <mat-datepicker #picker></mat-datepicker>
 
           @if (
-            (form.controls.expirationDate.dirty || submitted) &&
-            form.controls.expirationDate.hasError('required')
-          ) {
+            (form.get('expirationDate')?.dirty || submitted) &&
+            form.get('expirationDate')?.hasError('required')
+            ) {
             <mat-error>Expiration date is required</mat-error>
           }
-          @if (form.controls.expirationDate.hasError('invalidDate')) {
+
+          @if (
+            form.get('expirationDate')?.dirty && form.get('expirationDate')?.hasError('invalidDate')
+            ) {
             <mat-error>Expiration date cannot be in the past</mat-error>
           }
         </mat-form-field>
@@ -66,7 +75,7 @@
           />
           <ngx-material-timepicker #timePicker></ngx-material-timepicker>
 
-          @if (form.controls.expirationTime.hasError('invalidTime')) {
+          @if (form.get('expirationTime')?.dirty && form.get('expirationTime')?.hasError('invalidTime')) {
             <mat-error>Expiration time cannot be in the past</mat-error>
           }
         </mat-form-field>

@@ -38,4 +38,10 @@ mat-form-field {
   @media (max-width: 768px) {
     width: 100%;
   }
+
+  .mat-mdc-card-header {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+  }
 }

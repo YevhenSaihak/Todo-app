@@ -101,7 +101,7 @@ export class TodoFormComponent implements OnInit {
       title,
       createdAt: new Date().toISOString(),
       expirationDate: expirationDate.toISOString(),
-      expirationTime: expirationTime ?? undefined,
+      expirationTime: expirationTime ?? '',
       favorite: this.isEditMode ? this.originalFavorite : false,
     };
     const action$ = this.isEditMode ? this.todoService.update(todo) : this.todoService.create(todo);

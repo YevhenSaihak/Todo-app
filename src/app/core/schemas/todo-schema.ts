@@ -1,9 +1,5 @@
 import type { JSONSchema } from '@ngx-pwa/local-storage';
 
-/**
- * Проста схема для перевірки,
- * що дані є масивом (без детальної валідації полів).
- */
 export const TODO_ARRAY_SCHEMA: JSONSchema = {
   type: 'array',
   items: {
