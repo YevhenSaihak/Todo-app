@@ -12,7 +12,7 @@ import { MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { APP_DATE_FORMATS } from '../../shared/material/date-formats';
 import { CommonModule } from '@angular/common';
 import { first } from 'rxjs';
-import {AutoResizeDirective} from '../../shared/directives/auto-resize.directive';
+import { AutoResizeDirective } from '../../shared/directives/auto-resize.directive';
 
 @Component({
   standalone: true,
@@ -23,7 +23,7 @@ import {AutoResizeDirective} from '../../shared/directives/auto-resize.directive
     ...MATERIAL_IMPORTS,
     BackButtonComponent,
     NgxMaterialTimepickerModule,
-    AutoResizeDirective
+    AutoResizeDirective,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'uk' },
@@ -101,7 +101,7 @@ export class TodoFormComponent implements OnInit {
       title,
       createdAt: new Date().toISOString(),
       expirationDate: expirationDate.toISOString(),
-      expirationTime: expirationTime ?? null,
+      expirationTime: expirationTime ?? '',
       favorite: this.isEditMode ? this.originalFavorite : false,
     };
     const action$ = this.isEditMode ? this.todoService.update(todo) : this.todoService.create(todo);

@@ -43,6 +43,7 @@ export class TodoFormComponent implements OnInit {
   isEditMode = false;
   todoId: string | null = null;
   originalFavorite = false;
+  createdAtOriginal: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -79,6 +80,8 @@ export class TodoFormComponent implements OnInit {
           if (!todo) return void this.router.navigate(['/list']);
 
           this.originalFavorite = todo.favorite;
+          this.createdAtOriginal = todo.createdAt;
+
           this.form.patchValue({
             title: todo.title,
             expirationDate: new Date(todo.expirationDate),
@@ -99,7 +102,7 @@ export class TodoFormComponent implements OnInit {
     const todo: TodoModel = {
       id: this.isEditMode ? (this.todoId ?? uuidv4()) : uuidv4(),
       title,
-      createdAt: new Date().toISOString(),
+      createdAt: this.isEditMode ? this.createdAtOriginal! : new Date().toISOString(),
       expirationDate: expirationDate.toISOString(),
       expirationTime: expirationTime ?? '',
       favorite: this.isEditMode ? this.originalFavorite : false,
