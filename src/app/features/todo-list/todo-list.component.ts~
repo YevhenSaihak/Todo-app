@@ -4,14 +4,18 @@ import { TodoService } from '../../core/services/todo.service';
 import { TodoModel } from '../../core/models/todo.model';
 import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
 import { MATERIAL_IMPORTS } from '../../shared/material/material';
-import { TodoItemComponent } from '../todo-item/todo-item.component';
+import {TodoItemComponent} from '../todo-item/todo-item.component';
 
 @Component({
   standalone: true,
   selector: 'app-todo-list',
-  imports: [BackButtonComponent, TodoItemComponent, ...MATERIAL_IMPORTS],
+  imports: [
+    BackButtonComponent,
+    TodoItemComponent,
+    ...MATERIAL_IMPORTS,
+  ],
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.scss'],
+  styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent implements OnInit {
   favoriteOnly = false;
@@ -19,15 +23,17 @@ export class TodoListComponent implements OnInit {
   todosList: TodoModel[] = []; // ← локальне зберігання всіх задач
 
   constructor(
-    private todoService: TodoService,
-    private route: ActivatedRoute,
+    private todos: TodoService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.favoriteOnly = this.route.snapshot.data['favoriteOnly'] === true;
 
-    this.todoService.getAll().subscribe(list => {
-      this.todosList = this.favoriteOnly ? list.filter(t => t.favorite) : list;
+    this.todos.getAll().subscribe((list) => {
+      this.todosList = this.favoriteOnly
+        ? list.filter(t => t.favorite)
+        : list;
     });
   }
 
@@ -48,22 +54,8 @@ export class TodoListComponent implements OnInit {
     return this.todosList.filter(todo => !this.isToday(todo.expirationDate));
   }
 
-  // /** Обробник видалення задачі */
-  // onRemoved(id: string): void {
-  //   this.todosList = this.todosList.filter(t => t.id !== id);
-  // }
-
+  /** Обробник видалення задачі */
   onRemoved(id: string): void {
     this.todosList = this.todosList.filter(t => t.id !== id);
-    this.todoService.delete(id).subscribe(); // ← обязательно удаление в LS
-  }
-
-  onToggleFavorite(id: string): void {
-    this.todoService.toggleFavorite(id).subscribe(updatedTodo => {
-      const idx = this.todosList.findIndex(t => t.id === id);
-      if (idx !== -1) {
-        this.todosList[idx] = updatedTodo;
-      }
-    });
   }
 }

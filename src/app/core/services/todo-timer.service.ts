@@ -1,0 +1,48 @@
+import { Injectable } from '@angular/core';
+import { interval, Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { TodoModel } from '../../core/models/todo.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TodoTimerService {
+  /** Повертає потік, який віддає залишок часу у текстовому форматі */
+  getTimeLeftStream(todo: TodoModel): Observable<string> {
+    return interval(1000).pipe(
+      startWith(0),
+      map(() => this.calculateTimeLeft(todo)),
+    );
+  }
+
+  getExpirationWithTime(todo: TodoModel): Date {
+    const date = new Date(todo.expirationDate);
+    const [hours, minutes] = (todo.expirationTime ?? '00:00').split(':').map(Number);
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  }
+
+  calculateTimeLeft(todo: TodoModel): string {
+    const expiration = this.getExpirationWithTime(todo);
+    const now = new Date();
+    const diffMs = expiration.getTime() - now.getTime();
+
+    if (diffMs <= 0) return 'expired';
+
+    const totalSeconds = Math.floor(diffMs / 1000);
+
+    if (totalSeconds < 3600) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return `${this.pad(mins)}m ${this.pad(secs)}s`;
+    }
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    return `${hours}h ${mins}m`;
+  }
+
+  private pad(n: number): string {
+    return n.toString().padStart(2, '0');
+  }
+}

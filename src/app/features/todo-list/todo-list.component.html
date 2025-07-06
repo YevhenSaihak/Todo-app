@@ -1,1 +1,36 @@
-<p>todo-list works!</p>
+<mat-card>
+  <mat-card-header>
+    <app-back-button></app-back-button>
+    <mat-card-title>
+      @if (favoriteOnly) {
+        Favorites
+      } @else {
+        All TODOs
+      }
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (todayTodos.length > 0) {
+      <h3>Today</h3>
+      @for (t of todayTodos; track t.id) {
+        <app-todo-item
+          [todo]="t"
+          (removed)="onRemoved($event)"
+          (toggledFavorite)="onToggleFavorite($event)"
+        ></app-todo-item>
+      }
+    }
+
+    @if (otherTodos.length > 0) {
+      <h3>Other</h3>
+      @for (t of otherTodos; track t.id) {
+        <app-todo-item [todo]="t" (removed)="onRemoved($event)"></app-todo-item>
+      }
+    }
+
+    @if (todayTodos.length === 0 && otherTodos.length === 0) {
+      <p>No TODOs found.</p>
+    }
+  </mat-card-content>
+</mat-card>
