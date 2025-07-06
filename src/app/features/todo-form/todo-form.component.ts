@@ -1,0 +1,111 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { v4 as uuidv4 } from 'uuid';
+import { TodoModel } from '../../core/models/todo.model';
+import { TodoService } from '../../core/services/todo.service';
+import { dateTimeValidator } from '../../shared/validators/date-time.validator';
+import { MATERIAL_IMPORTS } from '../../shared/material/material';
+import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { APP_DATE_FORMATS } from '../../shared/material/date-formats';
+import { CommonModule } from '@angular/common';
+import { first } from 'rxjs';
+
+@Component({
+  standalone: true,
+  selector: 'app-todo-form',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ...MATERIAL_IMPORTS,
+    BackButtonComponent,
+    NgxMaterialTimepickerModule,
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'uk' },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+  ],
+  templateUrl: './todo-form.component.html',
+  styleUrls: ['./todo-form.component.scss'],
+})
+export class TodoFormComponent implements OnInit {
+  form!: FormGroup<{
+    title: FormControl<string>;
+    expirationDate: FormControl<Date>;
+    expirationTime: FormControl<string | null>;
+  }>;
+
+  submitted = false;
+  isEditMode = false;
+  todoId: string | null = null;
+  originalFavorite = false;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private todoService: TodoService,
+  ) {}
+
+  ngOnInit(): void {
+    this.todoId = this.route.snapshot.paramMap.get('id');
+    this.isEditMode = !!this.todoId;
+
+    // Ініціалізація форми
+    this.form = new FormGroup(
+      {
+        title: new FormControl('', {
+          nonNullable: true,
+          validators: [ctrl => Validators.required(ctrl), ctrl => Validators.maxLength(100)(ctrl)],
+        }),
+        expirationDate: new FormControl(new Date(), {
+          nonNullable: true,
+          validators: [ctrl => Validators.required(ctrl)],
+        }),
+        expirationTime: new FormControl<string | null>(null),
+      },
+      { validators: [form => dateTimeValidator(form)] },
+    );
+
+    // Якщо edit режим — заповнюємо форму даними
+    if (this.isEditMode && this.todoId) {
+      this.todoService
+        .getById(this.todoId)
+        .pipe(first())
+        .subscribe(todo => {
+          if (!todo) return void this.router.navigate(['/list']);
+
+          this.originalFavorite = todo.favorite;
+          this.form.patchValue({
+            title: todo.title,
+            expirationDate: new Date(todo.expirationDate),
+            expirationTime: todo.expirationTime ?? null,
+          });
+        });
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    if (this.form.invalid) return;
+
+    const { title, expirationDate, expirationTime } = this.form.value;
+
+    if (!title || !expirationDate) return;
+
+    const todo: TodoModel = {
+      id: this.isEditMode ? (this.todoId ?? uuidv4()) : uuidv4(),
+      title,
+      createdAt: new Date().toISOString(),
+      expirationDate: expirationDate.toISOString(),
+      expirationTime: expirationTime ?? undefined,
+      favorite: this.isEditMode ? this.originalFavorite : false,
+    };
+    const action$ = this.isEditMode ? this.todoService.update(todo) : this.todoService.create(todo);
+
+    void action$.subscribe(() => {
+      void this.router.navigate(['/list']);
+    });
+  }
+}

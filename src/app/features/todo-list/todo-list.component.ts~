@@ -1,61 +1,69 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { TodoService } from '../../core/services/todo.service';
 import { TodoModel } from '../../core/models/todo.model';
 import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
 import { MATERIAL_IMPORTS } from '../../shared/material/material';
-import {TodoItemComponent} from '../todo-item/todo-item.component';
+import { TodoItemComponent } from '../todo-item/todo-item.component';
 
 @Component({
   standalone: true,
   selector: 'app-todo-list',
-  imports: [
-    BackButtonComponent,
-    TodoItemComponent,
-    ...MATERIAL_IMPORTS,
-  ],
+  imports: [BackButtonComponent, TodoItemComponent, ...MATERIAL_IMPORTS],
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.scss']
+  styleUrls: ['./todo-list.component.scss'],
 })
 export class TodoListComponent implements OnInit {
   favoriteOnly = false;
 
-  todosList: TodoModel[] = []; // ← локальне зберігання всіх задач
+  todosList: TodoModel[] = [];
 
   constructor(
-    private todos: TodoService,
-    private route: ActivatedRoute
+    private todoService: TodoService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.favoriteOnly = this.route.snapshot.data['favoriteOnly'] === true;
 
-    this.todos.getAll().subscribe((list) => {
-      this.todosList = this.favoriteOnly
-        ? list.filter(t => t.favorite)
-        : list;
+    this.todoService.getAll().subscribe(list => {
+      this.todosList = this.favoriteOnly ? list.filter(t => t.favorite) : list;
     });
   }
 
-  /** Перевіряє, чи задача на сьогодні */
+  // Перевіряє, чи задача на сьогодні
   isToday(dateStr: string): boolean {
     const target = new Date(dateStr);
     const today = new Date();
     return target.toDateString() === today.toDateString();
   }
 
-  /** Задачі на сьогодні */
+  // Задачі на сьогодні
   get todayTodos(): TodoModel[] {
     return this.todosList.filter(todo => this.isToday(todo.expirationDate));
   }
 
-  /** Задачі не на сьогодні */
+  // Задачі не на сьогодні
   get otherTodos(): TodoModel[] {
     return this.todosList.filter(todo => !this.isToday(todo.expirationDate));
   }
 
-  /** Обробник видалення задачі */
   onRemoved(id: string): void {
     this.todosList = this.todosList.filter(t => t.id !== id);
+    this.todoService.delete(id).subscribe();
+  }
+
+  onToggleFavorite(id: string): void {
+    this.todoService.toggleFavorite(id).subscribe(updatedTodo => {
+      const idx = this.todosList.findIndex(t => t.id === id);
+      if (idx !== -1) {
+        this.todosList[idx] = updatedTodo;
+      }
+    });
+  }
+
+  onEdit(id: string): void {
+    this.router.navigate(['/edit', id]);
   }
 }

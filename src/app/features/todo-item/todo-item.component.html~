@@ -9,13 +9,13 @@
 
       @if (timeLeftValue) {
         <span [ngClass]="{ urgent: timeLeftValue.includes('s') }">
-          Time left: {{ timeLeftValue }}
-        </span>
+        Time left: {{ timeLeftValue }}
+      </span>
       }
     </mat-card-subtitle>
 
     <mat-card-actions>
-      <button mat-icon-button (click)="onToggleFavorite($event)">
+      <button mat-icon-button (click)="onToggleFavorite()">
         <mat-icon>{{ todo.favorite ? 'favorite' : 'favorite_border' }}</mat-icon>
       </button>
       <button mat-icon-button color="warn" (click)="onRemove($event)">
@@ -24,3 +24,4 @@
     </mat-card-actions>
   </mat-card>
 </section>
+

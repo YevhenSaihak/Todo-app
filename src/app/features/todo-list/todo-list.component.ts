@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TodoService } from '../../core/services/todo.service';
 import { TodoModel } from '../../core/models/todo.model';
 import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
@@ -16,11 +16,12 @@ import { TodoItemComponent } from '../todo-item/todo-item.component';
 export class TodoListComponent implements OnInit {
   favoriteOnly = false;
 
-  todosList: TodoModel[] = []; // ← локальне зберігання всіх задач
+  todosList: TodoModel[] = [];
 
   constructor(
     private todoService: TodoService,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -31,31 +32,26 @@ export class TodoListComponent implements OnInit {
     });
   }
 
-  /** Перевіряє, чи задача на сьогодні */
+  // Перевіряє, чи задача на сьогодні
   isToday(dateStr: string): boolean {
     const target = new Date(dateStr);
     const today = new Date();
     return target.toDateString() === today.toDateString();
   }
 
-  /** Задачі на сьогодні */
+  // Задачі на сьогодні
   get todayTodos(): TodoModel[] {
     return this.todosList.filter(todo => this.isToday(todo.expirationDate));
   }
 
-  /** Задачі не на сьогодні */
+  // Задачі не на сьогодні
   get otherTodos(): TodoModel[] {
     return this.todosList.filter(todo => !this.isToday(todo.expirationDate));
   }
 
-  // /** Обробник видалення задачі */
-  // onRemoved(id: string): void {
-  //   this.todosList = this.todosList.filter(t => t.id !== id);
-  // }
-
   onRemoved(id: string): void {
     this.todosList = this.todosList.filter(t => t.id !== id);
-    this.todoService.delete(id).subscribe(); // ← обязательно удаление в LS
+    this.todoService.delete(id).subscribe();
   }
 
   onToggleFavorite(id: string): void {
@@ -65,5 +61,9 @@ export class TodoListComponent implements OnInit {
         this.todosList[idx] = updatedTodo;
       }
     });
+  }
+
+  onEdit(id: string): void {
+    void this.router.navigate(['/edit', id]);
   }
 }

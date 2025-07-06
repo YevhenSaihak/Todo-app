@@ -1,0 +1,11 @@
+.todo-list {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  .mat-mdc-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}

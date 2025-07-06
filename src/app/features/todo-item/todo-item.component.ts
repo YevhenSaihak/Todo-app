@@ -8,16 +8,16 @@ import {
   OnDestroy,
   ChangeDetectorRef,
 } from '@angular/core';
-import { CommonModule, NgIf, NgClass } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { MATERIAL_IMPORTS } from '../../shared/material/material';
 import { TodoModel } from '../../core/models/todo.model';
-import { interval, map, startWith, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { TodoTimerService } from '../../core/services/todo-timer.service';
 
 @Component({
   standalone: true,
   selector: 'app-todo-item',
-  imports: [CommonModule, NgIf, NgClass, ...MATERIAL_IMPORTS],
+  imports: [CommonModule, NgClass, ...MATERIAL_IMPORTS],
   templateUrl: './todo-item.component.html',
   styleUrls: ['./todo-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,11 +46,13 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  onRemove(): void {
+  onRemove(event: MouseEvent): void {
+    event.stopPropagation();
     this.removed.emit(this.todo.id);
   }
 
-  onToggleFavorite(): void {
+  onToggleFavorite(event: MouseEvent): void {
+    event.stopPropagation();
     this.toggledFavorite.emit(this.todo.id);
   }
 }
