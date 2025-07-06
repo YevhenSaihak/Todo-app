@@ -16,14 +16,8 @@
       <div class="form-field">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Title</mat-label>
-          <textarea
-            matInput
-            formControlName="title"
-            rows="3"
-            appAutoResize
-            maxlength="101"
-            spellcheck="false"
-          ></textarea>
+          <textarea matInput formControlName="title" rows="3" appAutoResize maxlength="100"
+                    spellcheck="false"></textarea>
           <mat-hint align="end"> {{ form.controls.title.value?.length || 0 }}/100 </mat-hint>
 
           @if (
