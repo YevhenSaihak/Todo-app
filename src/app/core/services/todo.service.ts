@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StorageMap } from '@ngx-pwa/local-storage';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of, throwError } from 'rxjs';
 import { switchMap, delay, tap } from 'rxjs/operators';
 import { TodoModel } from '../models/todo.model';
 import { TODO_ARRAY_SCHEMA } from '../schemas/todo-schema';
@@ -43,11 +43,11 @@ export class TodoService {
 
   create(todo: TodoModel): Observable<TodoModel> {
     this.todos = [...this.todos, todo];
-    return of(todo).pipe(
+
+    return this.storage.set(this.STORAGE_KEY, this.todos).pipe(
       delay(randomDelay()),
-      tap(() => {
-        this.storage.set(this.STORAGE_KEY, this.todos).subscribe();
-      }),
+      tap(() => console.log('persisted', this.todos)),
+      map(() => todo),
     );
   }
 
@@ -81,8 +81,12 @@ export class TodoService {
   // Знаходимо задачу, міняємо favorite і оновлюємо.
 
   toggleFavorite(id: string): Observable<TodoModel> {
-    const todo = this.todos.find(t => t.id === id)!;
-    const updated = { ...todo, favorite: !todo.favorite };
+    const found = this.todos.find(t => t.id === id);
+    if (!found) {
+      // Не вдалося знайти задачу з таким id
+      return throwError(() => new Error(`Todo з id=${id} не знайдено`));
+    }
+    const updated = { ...found, favorite: !found.favorite };
     return this.update(updated);
   }
 }

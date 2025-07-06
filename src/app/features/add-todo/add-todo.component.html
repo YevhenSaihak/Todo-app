@@ -1,0 +1,75 @@
+<mat-card>
+  <mat-card-header>
+    <app-back-button></app-back-button>
+    <mat-card-title>Add TODO</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content [formGroup]="form">
+    <!-- Title -->
+    <div class="form-field">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <textarea matInput formControlName="title" rows="3"></textarea>
+        <mat-hint align="end"> {{ (form.get('title')?.value)!.length || 0 }}/100 </mat-hint>
+
+        @if ((form.get('title')?.dirty || submitted) && form.get('title')?.hasError('required')) {
+          <mat-error>Title is required</mat-error>
+        }
+
+        @if ((form.get('title')?.dirty || submitted) && form.get('title')?.hasError('maxlength')) {
+          <mat-error>Maximum length is 100 characters</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Expiration Date -->
+    <div class="form-field">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Expiration Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="expirationDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+
+        @if (
+          (form.get('expirationDate')?.dirty || submitted) &&
+          form.get('expirationDate')?.hasError('required')
+        ) {
+          <mat-error>Expiration date is required</mat-error>
+        }
+
+        @if (
+          form.get('expirationDate')?.dirty && form.get('expirationDate')?.hasError('invalidDate')
+        ) {
+          <mat-error>Expiration date cannot be in the past</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Expiration Time -->
+    <div class="form-field">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Expiration Time</mat-label>
+        <input
+          matInput
+          [ngxTimepicker]="timePicker"
+          [format]="24"
+          formControlName="expirationTime"
+          readonly
+        />
+        <ngx-material-timepicker #timePicker></ngx-material-timepicker>
+
+        @if (
+          form.get('expirationTime')?.dirty && form.get('expirationTime')?.hasError('invalidTime')
+        ) {
+          <mat-error>Expiration time cannot be in the past</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+      Create
+    </button>
+  </mat-card-actions>
+</mat-card>
