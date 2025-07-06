@@ -9,7 +9,6 @@ import { TODO_ARRAY_SCHEMA } from '../schemas/todo-schema';
 const randomDelay = () => 300 + Math.floor(Math.random() * 100);
 
 @Injectable({ providedIn: 'root' })
-
 export class TodoService {
   private readonly STORAGE_KEY = 'todos';
   private todos: TodoModel[] = []; // Кеш у пам’яті
@@ -91,23 +90,7 @@ export class TodoService {
     return this.update(updated);
   }
 
-
   getById(id: string): Observable<TodoModel | undefined> {
-    return this.getAll().pipe(
-      map(list => list.find(t => t.id === id))
-    );
+    return this.getAll().pipe(map(list => list.find(t => t.id === id)));
   }
-
-  // update(updated: TodoModel): Observable<void> {
-  //   this.todos = this.todos.map(todo =>
-  //     todo.id === updated.id ? updated : todo
-  //   );
-  //   return of(void 0).pipe(
-  //     delay(randomDelay()),
-  //     tap(() => {
-  //       this.storage.set(this.STORAGE_KEY, this.todos).subscribe();
-  //     })
-  //   );
-  // }
-
 }

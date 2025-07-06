@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StorageMap } from '@ngx-pwa/local-storage';
-import { map, Observable, of, throwError } from 'rxjs';
-import { switchMap, delay, tap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { map, switchMap, delay, tap } from 'rxjs/operators';
 import { TodoModel } from '../models/todo.model';
 import { TODO_ARRAY_SCHEMA } from '../schemas/todo-schema';
 
@@ -13,49 +13,41 @@ export class TodoService {
   private readonly STORAGE_KEY = 'todos';
   private todos: TodoModel[] = []; // Кеш у пам’яті
 
-  constructor(private storage: StorageMap) {
-    // Завантажуємо початковий список із LocalStorage
-    this.storage.get<TodoModel[]>(this.STORAGE_KEY, TODO_ARRAY_SCHEMA).subscribe(stored => {
-      // якщо в LS нічого немає — беремо пустий масив
-      this.todos = stored ?? [];
-    });
-  }
+  constructor(private storage: StorageMap) {}
 
   // Отримати всі TODO.
-  // Спочатку повертаємо кеш, потім оновлюємо з LS із затримкою.
-
+  // Якщо кеш уже є — повертаємо його без затримки.
+  // Інакше — читаємо з LS із затримкою.
   getAll(): Observable<TodoModel[]> {
-    return of(this.todos).pipe(
-      switchMap(() =>
-        this.storage.get<TodoModel[]>(this.STORAGE_KEY, TODO_ARRAY_SCHEMA).pipe(
-          delay(randomDelay()), // імітація затримки
-          tap(fresh => {
-            this.todos = fresh ?? []; // оновлюємо кеш
-          }),
-          switchMap(() => of(this.todos)),
-        ),
-      ),
+    if (this.todos.length > 0) {
+      return of(this.todos);
+    }
+
+    return this.storage.get<TodoModel[]>(this.STORAGE_KEY, TODO_ARRAY_SCHEMA).pipe(
+      delay(randomDelay()), // імітація затримки
+      tap(list => {
+        this.todos = list ?? []; // оновлюємо кеш
+      }),
+      map(list => list ?? []),
     );
   }
 
   // Створити новий TODO.
   // Додаємо в кеш і зберігаємо в LS із затримкою.
-
   create(todo: TodoModel): Observable<TodoModel> {
     this.todos = [...this.todos, todo];
 
     return this.storage.set(this.STORAGE_KEY, this.todos).pipe(
       delay(randomDelay()),
-      tap(() => console.log('persisted', this.todos)),
       map(() => todo),
     );
   }
 
   // Оновити існуючий TODO.
   // Модифікуємо кеш і оновлюємо LS.
-
   update(updated: TodoModel): Observable<TodoModel> {
     this.todos = this.todos.map(t => (t.id === updated.id ? updated : t));
+
     return of(updated).pipe(
       delay(randomDelay()),
       tap(() => {
@@ -66,9 +58,9 @@ export class TodoService {
 
   // Видалити TODO за ідентифікатором.
   // Очищуємо кеш і LS.
-
   delete(id: string): Observable<void> {
     this.todos = this.todos.filter(t => t.id !== id);
+
     return of(undefined).pipe(
       delay(randomDelay()),
       tap(() => {
@@ -79,17 +71,18 @@ export class TodoService {
 
   // Переключити стан “в обране”.
   // Знаходимо задачу, міняємо favorite і оновлюємо.
-
   toggleFavorite(id: string): Observable<TodoModel> {
     const found = this.todos.find(t => t.id === id);
     if (!found) {
-      // Не вдалося знайти задачу з таким id
       return throwError(() => new Error(`Todo з id=${id} не знайдено`));
     }
+
     const updated = { ...found, favorite: !found.favorite };
     return this.update(updated);
   }
 
+  // Отримати TODO по id
+  // Повертає задачу або undefined
   getById(id: string): Observable<TodoModel | undefined> {
     return this.getAll().pipe(map(list => list.find(t => t.id === id)));
   }
