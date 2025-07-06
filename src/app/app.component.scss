@@ -1,0 +1,50 @@
+/* Відступи навколо основного контенту */
+.content {
+  padding: 16px;
+}
+
+/* Назва застосунку в тулбарі */
+.app-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* Гнучкий елемент для розтягування простору між назвою та навігацією */
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Десктопна навігація — показується лише на великих екранах */
+.desktop-nav {
+  display: flex;
+  gap: 12px;
+}
+
+/* Кнопка меню (бургер) — за замовчуванням прихована */
+.mobile-menu-button {
+  display: none;
+}
+
+/* Медіа-запит для мобільних пристроїв */
+@media (max-width: 768px) {
+  /* Ховаємо десктопну навігацію на мобілках */
+  .desktop-nav {
+    display: none;
+  }
+
+  /* Показуємо кнопку бургер-меню */
+  .mobile-menu-button {
+    display: inline-flex;
+  }
+
+  /* Відступ назви на мобільному */
+  .app-title {
+    margin-left: 8px;
+  }
+}
+
+/* Активне посилання в навігації */
+.active-link {
+  font-weight: bold;
+  text-decoration: underline;
+}

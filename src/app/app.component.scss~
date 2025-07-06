@@ -1,0 +1,47 @@
+/* Центровка и базовая верстка */
+.content {
+  padding: 16px;
+}
+
+/* Заголовок приложения */
+.app-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* Spacer — гибкий отступ */
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Навигация десктопная — по умолчанию видна */
+.desktop-nav {
+  display: flex;
+  gap: 12px;
+}
+
+/* Кнопка мобильного меню — скрыта на десктопе */
+.mobile-menu-button {
+  display: none;
+}
+
+/* Медиа-запрос для мобилки */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-menu-button {
+    display: inline-flex;
+  }
+
+  .app-title {
+    margin-left: 8px;
+  }
+}
+
+/* Активная ссылка */
+.active-link {
+  font-weight: bold;
+  text-decoration: underline;
+}

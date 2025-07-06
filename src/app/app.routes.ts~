@@ -8,5 +8,5 @@ export const routes: Routes = [
   { path: 'add', component: AddTodoComponent },
   { path: 'list', component: TodoListComponent },
   { path: 'favorite', component: TodoListComponent, data: { favoriteOnly: true } },
-  { path: '**', redirectTo: 'list' },
+  { path: '**', redirectTo: 'add' },
 ];

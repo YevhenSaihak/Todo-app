@@ -1,6 +1,29 @@
-<mat-toolbar color="primary">
-  <span>My TODO App</span>
+<mat-toolbar color="primary" class="toolbar">
+  <!-- Кнопка гамбургера на мобилках -->
+  <button mat-icon-button [matMenuTriggerFor]="menu" class="mobile-menu-button">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <span class="app-title">My TODO App</span>
+
+  <!-- Spacer расталкивает элементы -->
+  <span class="spacer"></span>
+
+  <!-- Десктопная навигация -->
+  <nav class="desktop-nav">
+    <a mat-button routerLink="/add" routerLinkActive="active-link">Add</a>
+    <a mat-button routerLink="/list" routerLinkActive="active-link">List</a>
+    <a mat-button routerLink="/favorite" routerLinkActive="active-link">Favorite</a>
+  </nav>
 </mat-toolbar>
+
+<!-- Меню для мобилки -->
+<mat-menu #menu="matMenu">
+  <button mat-menu-item routerLink="/add">Add</button>
+  <button mat-menu-item routerLink="/list">List</button>
+  <button mat-menu-item routerLink="/favorite">Favorite</button>
+</mat-menu>
+
 <div class="content">
   <router-outlet></router-outlet>
 </div>
