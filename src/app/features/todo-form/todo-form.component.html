@@ -86,7 +86,12 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onSubmit()"
+        [disabled]="form.invalid || form.untouched"
+      >
         @if (isEditMode) {
           Update
         } @else {

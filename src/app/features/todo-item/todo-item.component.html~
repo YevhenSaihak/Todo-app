@@ -1,26 +1,30 @@
 <section class="todo-item">
-  <mat-card>
-    <mat-card-title><h2 class="ellipsis-text">{{ todo.title }}</h2></mat-card-title>
+  <mat-card [@fadeIn]>
+    <mat-card-title
+      ><h2 class="ellipsis-text">{{ todo.title }}</h2></mat-card-title
+    >
 
-    <mat-card-subtitle>
-      Created: {{ todo.createdAt | date: 'short' }}<br />
-      Expires: {{ todo.expirationDate | date: 'shortDate' }} {{ todo.expirationTime }}
-      <br />
+    <div class="todo-item__container">
+      <mat-card-subtitle>
+        Created: {{ todo.createdAt | date: 'short' }}<br />
+        Expires: {{ todo.expirationDate | date: 'shortDate' }} {{ todo.expirationTime }}
+        <br />
 
-      @if (timeLeftValue) {
-        <span [ngClass]="{ urgent: timeLeftValue.includes('s') }">
-          Time left: {{ timeLeftValue }}
-        </span>
-      }
-    </mat-card-subtitle>
+        @if (timeLeftValue && !todayList) {
+          <span [ngClass]="{ urgent: timeLeftValue.includes('s') }">
+            Time left: {{ timeLeftValue }}
+          </span>
+        }
+      </mat-card-subtitle>
 
-    <mat-card-actions>
-      <button mat-icon-button (click)="onToggleFavorite($event)">
-        <mat-icon>{{ todo.favorite ? 'favorite' : 'favorite_border' }}</mat-icon>
-      </button>
-      <button mat-icon-button color="warn" (click)="onRemove($event)">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </mat-card-actions>
+      <mat-card-actions>
+        <button mat-icon-button (click)="onToggleFavorite($event)">
+          <mat-icon>{{ todo.favorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="onRemove($event)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </div>
   </mat-card>
 </section>

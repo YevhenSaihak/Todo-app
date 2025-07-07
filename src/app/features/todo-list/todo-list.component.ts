@@ -5,18 +5,19 @@ import { TodoModel } from '../../core/models/todo.model';
 import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
 import { MATERIAL_IMPORTS } from '../../shared/material/material';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   standalone: true,
   selector: 'app-todo-list',
-  imports: [BackButtonComponent, TodoItemComponent, ...MATERIAL_IMPORTS],
+  imports: [BackButtonComponent, TodoItemComponent, ...MATERIAL_IMPORTS, MatProgressSpinnerModule],
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
 })
 export class TodoListComponent implements OnInit {
   favoriteOnly = false;
-
   todosList: TodoModel[] = [];
+  loading = true;
 
   constructor(
     private todoService: TodoService,
@@ -26,25 +27,29 @@ export class TodoListComponent implements OnInit {
 
   ngOnInit(): void {
     this.favoriteOnly = this.route.snapshot.data['favoriteOnly'] === true;
+    this.loadTodos();
+  }
+
+  loadTodos(): void {
+    this.loading = true;
 
     this.todoService.getAll().subscribe(list => {
-      this.todosList = this.favoriteOnly ? list.filter(t => t.favorite) : list;
+      const filtered = this.favoriteOnly ? list.filter(t => t.favorite) : list;
+      this.todosList = filtered;
+      this.loading = false;
     });
   }
 
-  // Перевіряє, чи задача на сьогодні
   isToday(dateStr: string): boolean {
     const target = new Date(dateStr);
     const today = new Date();
     return target.toDateString() === today.toDateString();
   }
 
-  // Задачі на сьогодні
   get todayTodos(): TodoModel[] {
     return this.todosList.filter(todo => this.isToday(todo.expirationDate));
   }
 
-  // Задачі не на сьогодні
   get otherTodos(): TodoModel[] {
     return this.todosList.filter(todo => !this.isToday(todo.expirationDate));
   }
@@ -55,10 +60,10 @@ export class TodoListComponent implements OnInit {
   }
 
   onToggleFavorite(id: string): void {
-    this.todoService.toggleFavorite(id).subscribe(updatedTodo => {
+    this.todoService.toggleFavorite(id).subscribe(updated => {
       const idx = this.todosList.findIndex(t => t.id === id);
       if (idx !== -1) {
-        this.todosList[idx] = updatedTodo;
+        this.todosList[idx] = updated;
       }
     });
   }

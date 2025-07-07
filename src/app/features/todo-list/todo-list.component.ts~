@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TodoService } from '../../core/services/todo.service';
 import { TodoModel } from '../../core/models/todo.model';
 import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
 import { MATERIAL_IMPORTS } from '../../shared/material/material';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
   standalone: true,
   selector: 'app-todo-list',
-  imports: [BackButtonComponent, TodoItemComponent, ...MATERIAL_IMPORTS],
+  imports: [BackButtonComponent, TodoItemComponent, ...MATERIAL_IMPORTS, MatProgressSpinner, MatProgressSpinner],
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
 })
@@ -21,7 +22,7 @@ export class TodoListComponent implements OnInit {
   constructor(
     private todoService: TodoService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +65,6 @@ export class TodoListComponent implements OnInit {
   }
 
   onEdit(id: string): void {
-    this.router.navigate(['/edit', id]);
+    void this.router.navigate(['/edit', id]);
   }
 }

@@ -1,5 +1,5 @@
 <section class="todo-item">
-  <mat-card>
+  <mat-card [@fadeIn]>
     <mat-card-title
       ><h2 class="ellipsis-text">{{ todo.title }}</h2></mat-card-title
     >
@@ -10,7 +10,7 @@
         Expires: {{ todo.expirationDate | date: 'shortDate' }} {{ todo.expirationTime }}
         <br />
 
-        @if (timeLeftValue) {
+        @if (timeLeftValue && todayList) {
           <span [ngClass]="{ urgent: timeLeftValue.includes('s') }">
             Time left: {{ timeLeftValue }}
           </span>

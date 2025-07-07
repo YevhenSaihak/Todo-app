@@ -13,6 +13,7 @@ import { MATERIAL_IMPORTS } from '../../shared/material/material';
 import { TodoModel } from '../../core/models/todo.model';
 import { Subscription } from 'rxjs';
 import { TodoTimerService } from '../../core/services/todo-timer.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   standalone: true,
@@ -21,8 +22,17 @@ import { TodoTimerService } from '../../core/services/todo-timer.service';
   templateUrl: './todo-item.component.html',
   styleUrls: ['./todo-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-in', style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class TodoItemComponent implements OnInit, OnDestroy {
+  @Input() todayList = false;
   @Input() todo!: TodoModel;
   @Output() removed = new EventEmitter<string>();
   @Output() toggledFavorite = new EventEmitter<string>();

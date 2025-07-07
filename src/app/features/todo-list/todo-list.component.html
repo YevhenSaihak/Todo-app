@@ -1,43 +1,56 @@
 <section class="todo-list">
   <mat-card>
     <mat-card-header>
-      <app-back-button></app-back-button>
+      @if (todayTodos.length !== 0 || otherTodos.length !== 0) {
+        <app-back-button></app-back-button>
+      }
       <mat-card-title>
         @if (favoriteOnly) {
-          FAVORITES
+          FAVORITE
         } @else {
-          All TODOs
+          ALL TODOs
         }
       </mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-      @if (todayTodos.length > 0) {
-        <h3>Today</h3>
-        @for (t of todayTodos; track t.id) {
-          <app-todo-item
-            [todo]="t"
-            (removed)="onRemoved($event)"
-            (toggledFavorite)="onToggleFavorite($event)"
-            (click)="onEdit(t.id)"
-          ></app-todo-item>
+      <!-- Спіннер -->
+      @if (loading) {
+        <div class="loader">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      } @else {
+        <!-- Список на сьогодні -->
+        @if (todayTodos.length > 0) {
+          <h3>Today</h3>
+          @for (todo of todayTodos; track todo.id) {
+            <app-todo-item
+              [todo]="todo"
+              [todayList]="true"
+              (removed)="onRemoved($event)"
+              (toggledFavorite)="onToggleFavorite($event)"
+              (click)="onEdit(todo.id)"
+            ></app-todo-item>
+          }
         }
-      }
 
-      @if (otherTodos.length > 0) {
-        <h3>Other</h3>
-        @for (t of otherTodos; track t.id) {
-          <app-todo-item
-            [todo]="t"
-            (removed)="onRemoved($event)"
-            (toggledFavorite)="onToggleFavorite($event)"
-            (click)="onEdit(t.id)"
-          ></app-todo-item>
+        <!-- Інші задачі -->
+        @if (otherTodos.length > 0) {
+          <h3>Other</h3>
+          @for (todo of otherTodos; track todo.id) {
+            <app-todo-item
+              [todo]="todo"
+              (removed)="onRemoved($event)"
+              (toggledFavorite)="onToggleFavorite($event)"
+              (click)="onEdit(todo.id)"
+            ></app-todo-item>
+          }
         }
-      }
 
-      @if (todayTodos.length === 0 && otherTodos.length === 0) {
-        <p>No TODOs found.</p>
+        <!-- Якщо задач немає -->
+        @if (todayTodos.length === 0 && otherTodos.length === 0) {
+          <p class="empty-message">Немає жодної задачі</p>
+        }
       }
     </mat-card-content>
   </mat-card>
