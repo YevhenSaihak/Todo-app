@@ -26,13 +26,12 @@
           ></textarea>
           <mat-hint align="end"> {{ form.controls.title.value?.length || 0 }}/100 </mat-hint>
 
-          @if (
-            (form.controls.title.dirty || submitted) && form.controls.title.hasError('required')
-          ) {
+          @if ((form.get('title')?.dirty || submitted) && form.get('title')?.hasError('required')) {
             <mat-error>Title is required</mat-error>
           }
+
           @if (
-            (form.controls.title.dirty || submitted) && form.controls.title.hasError('maxlength')
+            (form.get('title')?.dirty || submitted) && form.get('title')?.hasError('maxlength')
           ) {
             <mat-error>Maximum length is 100 characters</mat-error>
           }

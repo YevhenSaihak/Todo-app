@@ -1,13 +1,13 @@
 <section class="todo-item">
   <mat-card>
-    <mat-card-title>{{ todo.title }}</mat-card-title>
+    <mat-card-title><h2 class="ellipsis-text">{{ todo.title }}</h2></mat-card-title>
 
     <mat-card-subtitle>
       Created: {{ todo.createdAt | date: 'short' }}<br />
       Expires: {{ todo.expirationDate | date: 'shortDate' }} {{ todo.expirationTime }}
       <br />
 
-      @if (timeLeftValue.length > 0 || timeLeftValue.substr() === 'NaN') {
+      @if (timeLeftValue) {
         <span [ngClass]="{ urgent: timeLeftValue.includes('s') }">
           Time left: {{ timeLeftValue }}
         </span>

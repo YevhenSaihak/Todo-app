@@ -1,0 +1,22 @@
+.urgent {
+  color: red;
+  font-weight: bold;
+}
+
+.todo-item {
+  width: 100%;
+
+  .mat-mdc-card {
+    width: 100%;
+    padding: 15px;
+    background-color: white;
+  }
+}
+.ellipsis-text {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 120%;
+}

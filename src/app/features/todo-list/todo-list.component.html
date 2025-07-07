@@ -30,6 +30,7 @@
           <app-todo-item
             [todo]="t"
             (removed)="onRemoved($event)"
+            (toggledFavorite)="onToggleFavorite($event)"
             (click)="onEdit(t.id)"
           ></app-todo-item>
         }

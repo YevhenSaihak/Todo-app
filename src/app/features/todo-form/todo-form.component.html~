@@ -20,7 +20,6 @@
             matInput
             formControlName="title"
             rows="3"
-            appAutoResize
             maxlength="101"
             spellcheck="false"
           ></textarea>
@@ -50,13 +49,15 @@
           @if (
             (form.get('expirationDate')?.dirty || submitted) &&
             form.get('expirationDate')?.hasError('required')
-            ) {
+          ) {
             <mat-error>Expiration date is required</mat-error>
           }
 
           @if (
-            form.get('expirationDate')?.dirty && form.get('expirationDate')?.hasError('invalidDate')
-            ) {
+            form.get('expirationDate')?.dirty &&
+            form.get('expirationDate')?.hasError('invalidDate') &&
+            !form.get('expirationDate')?.hasError('required')
+          ) {
             <mat-error>Expiration date cannot be in the past</mat-error>
           }
         </mat-form-field>
@@ -75,7 +76,9 @@
           />
           <ngx-material-timepicker #timePicker></ngx-material-timepicker>
 
-          @if (form.get('expirationTime')?.dirty && form.get('expirationTime')?.hasError('invalidTime')) {
+          @if (
+            form.get('expirationTime')?.dirty && form.get('expirationTime')?.hasError('invalidTime')
+          ) {
             <mat-error>Expiration time cannot be in the past</mat-error>
           }
         </mat-form-field>
