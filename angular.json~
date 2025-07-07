@@ -74,8 +74,7 @@
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.scss"
             ],
-            "scripts": [],
-            "baseHref": "/Todo-app/"
+            "scripts": []
           },
           "configurations": {
             "production": {
